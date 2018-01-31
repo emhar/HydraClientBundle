@@ -1,0 +1,27 @@
+services:
+    emhar_hydra_client.client.hydra:
+        class: Emhar\HydraClientBundle\Client\HydraClient
+        arguments:
+            - ~
+            - '@serializer'
+            - '@emhar_hydra_client.serializer.cache'
+    emhar_hydra_client.serializer.cache:
+        class: Emhar\HydraClientBundle\Serializer\Cache\ObjectCache
+    emhar_hydra_client.serializer.encoder.hydra_decode:
+        class: Emhar\HydraClientBundle\Serializer\Encoder\HydraDecode
+        arguments:
+            - ~
+        tags: [{name: serializer.encoder}]
+    emhar_hydra_client.serializer.normalizer.hydra_object_denormalize:
+        class: Emhar\HydraClientBundle\Serializer\Normalizer\HydraObjectDenormalizer
+        public: false
+        decorates: serializer.normalizer.object
+        arguments: ['@emhar_hydra_client.serializer.normalizer.hydra_object_denormalize.inner', ~, ~]
+        calls:
+            - [setSerializer, ['@serializer', priority: 10]]
+    emhar_hydra_client.serializer.normalizer.datetime:
+        class: Emhar\HydraClientBundle\Serializer\Normalizer\DateTimeDenormalizer
+        tags: [{name: serializer.normalizer, priority: 1000}]
+    serializer.normalizer.array:
+        class: Symfony\Component\Serializer\Normalizer\ArrayDenormalizer
+        tags: [{name: serializer.normalizer, priority: 1000}]

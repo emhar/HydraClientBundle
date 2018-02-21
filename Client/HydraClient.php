@@ -57,6 +57,7 @@ class HydraClient
 //                $type,
 //                HydraDecode::FORMAT
 //            ));die;
+            if($type) {
                 $object = $this->serializer->deserialize(
                     $response->getBody(),
                     $type,
@@ -64,6 +65,9 @@ class HydraClient
                     $context
                 );
                 $this->cache->set($resource, $object);
+            } else{
+                $object = (string)$response->getBody();
+            }
             return $object;
         } catch (RequestException $e) {
             if (($response = $e->getResponse()) && $response->getStatusCode() === 404) {

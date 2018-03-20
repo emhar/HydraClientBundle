@@ -48,6 +48,7 @@ class HydraDecode implements DecoderInterface
      */
     public function __construct(Client $client, $depth = 512)
     {
+        $this->client = $client;
         $this->recursionDepth = (int)$depth;
     }
 
